@@ -89,7 +89,7 @@ export default function Layout({
                       isActive
                         ? "bg-[#3839af]/10 text-[#3839af] font-bold"
                         : isDarkMode
-                          ? "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                          ? "text-slate-100 hover:text-white hover:bg-slate-800/50"
                           : "text-slate-600 hover:text-[#3839af] hover:bg-slate-100"
                     }`
                   }
@@ -196,7 +196,7 @@ export default function Layout({
 
       {/* --- MODERN ROYAL BLUE FOOTER --- */}
       <footer
-        className={`${brandBg} border-t border-indigo-950/40 bg-gradient-to-b from-[#3839af] to-[#1e1f5e] pt-16 pb-8`}
+        className={`${brandBg} border border-indigo-950/40 bg-gradient-to-b from-[#3839af] to-[#1e1f5e] pt-16 pb-8`}
       >
         {/* Constraining footer elements to 80% and enforcing clean grid column parameters */}
         <div
@@ -211,7 +211,7 @@ export default function Layout({
                 className="h-10 w-10 object-contain"
               />
               <span className="font-extrabold tracking-wider text-xl text-white">
-                E4<span className="text-indigo-200">SHOP</span>
+                E4<span className="text-indigo-100">SHOP</span>
               </span>
             </div>
             <p className="text-md leading-relaxed text-indigo-100/80 max-w-xs">
@@ -241,7 +241,7 @@ export default function Layout({
             <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200 h-6 flex items-center">
               Categories
             </h4>
-            <ul className="space-y-2.5 text-md text-indigo-100/70">
+            <ul className="space-y-2.5 text-md text-white/80">
               {navLinks.slice(0, 4).map((link) => (
                 <li key={link.to}>
                   <NavLink
@@ -260,7 +260,7 @@ export default function Layout({
             <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200 h-6 flex items-center">
               Contact Us
             </h4>
-            <div className="space-y-3 text-md text-indigo-100/70 w-full flex flex-col">
+            <div className="space-y-3 text-md text-white/80 w-full flex flex-col">
               <a
                 href="mailto:sales@e4shop.com"
                 className="flex items-center gap-3 hover:text-white transition-colors group"

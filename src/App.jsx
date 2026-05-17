@@ -5,13 +5,13 @@ import Layout from "./components/Layout.jsx";
 import ProductModal from "./components/ProductModal.jsx";
 import useProduct from "./hooks/useProduct.js";
 
-import HomePage from "./Pages/Home.jsx";
+import HomePage from "./pages/Home.jsx";
 import PhoneProducts from "./pages/PhoneProducts.jsx";
 import ComputerProducts from "./pages/ComputerProducts.jsx";
 import WatchProducts from "./pages/WatchProducts.jsx";
 import SingleProduct from "./pages/SingleProduct.jsx";
-import AboutUs from "./Pages/AboutUs.jsx";
-import Contact from "./Pages/Contact.jsx";
+import AboutUs from "./pages/AboutUs.jsx";
+import Contact from "./pages/Contact.jsx";
 
 export default function App() {
   const { loading, products } = useProduct();
