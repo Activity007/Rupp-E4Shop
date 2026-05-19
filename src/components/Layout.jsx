@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 // 1. Import both logo versions here
 import LogoDark from "../assets/LightLogo.png"; // For dark mode
-import LogoLight from "../assets/logolight.jpg"; // For light mode
+import LogoLight from "../assets/logoLight.png"; // For light mode
 
 import {
   ShoppingBag,
@@ -46,8 +46,8 @@ export default function Layout({
     <div
       className={`min-h-screen flex flex-col transition-colors duration-300 ${
         isDarkMode
-          ? "bg-slate-900 text-slate-100"
-          : "bg-slate-50 text-slate-800"
+          ? "bg-slate-800 text-slate-100"
+          : "bg-slate-100 text-slate-800"
       }`}
     >
       {/* --- PREMIUM NAVBAR --- */}
