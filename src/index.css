@@ -1,1 +1,107 @@
 @import "tailwindcss";
+
+@keyframes phone-aurora {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes phone-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(6deg);
+  }
+
+  50% {
+    transform: translateY(-18px) rotate(3deg);
+  }
+}
+
+@keyframes phone-soft-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes phone-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes phone-glow {
+  0%,
+  100% {
+    box-shadow: 0 24px 80px rgba(34, 211, 238, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 30px 110px rgba(34, 211, 238, 0.24);
+  }
+}
+
+@keyframes phone-shine {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+
+  to {
+    transform: translateX(180%) skewX(-18deg);
+  }
+}
+
+.phone-aurora {
+  animation: phone-aurora 12s ease infinite;
+  background-size: 180% 180%;
+}
+
+.phone-float {
+  animation: phone-float 5s ease-in-out infinite;
+}
+
+.phone-soft-float {
+  animation: phone-soft-float 4.5s ease-in-out infinite;
+}
+
+.phone-reveal {
+  animation: phone-reveal 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.phone-glow {
+  animation: phone-glow 4s ease-in-out infinite;
+}
+
+.phone-shine {
+  overflow: hidden;
+  position: relative;
+}
+
+.phone-shine::after {
+  animation: phone-shine 3.8s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}

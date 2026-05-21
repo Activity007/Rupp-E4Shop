@@ -6,10 +6,10 @@ import ProductModal from "./components/ProductModal.jsx";
 import useProduct from "./hooks/useProduct.js";
 
 import HomePage from "./pages/Home.jsx";
-import PhoneProducts from "./pages/PhoneProducts.jsx";
+import PhoneProducts from "./Pages/PhoneProducts.jsx";
 import ComputerProducts from "./pages/ComputerProducts.jsx";
 import WatchProducts from "./pages/WatchProducts.jsx";
-import SingleProduct from "./pages/SingleProduct.jsx";
+import SingleProduct from "./Pages/SingleProduct.jsx";
 import AboutUs from "./pages/AboutUs.jsx";
 import Contact from "./pages/Contact.jsx";
 
