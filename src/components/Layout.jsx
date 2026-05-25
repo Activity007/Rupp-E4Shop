@@ -45,9 +45,7 @@ export default function Layout({
   return (
     <div
       className={`min-h-screen flex flex-col transition-colors duration-300 ${
-        isDarkMode
-          ? "bg-slate-800 text-slate-100"
-          : "bg-slate-100 text-slate-800"
+        isDarkMode ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-800"
       }`}
     >
       {/* --- PREMIUM NAVBAR --- */}
@@ -89,7 +87,7 @@ export default function Layout({
                       isActive
                         ? "bg-[#3839af]/10 text-[#3839af] font-bold"
                         : isDarkMode
-                          ? "text-slate-100 hover:text-white hover:bg-slate-800/50"
+                          ? "text-white hover:bg-slate-800/50"
                           : "text-slate-600 hover:text-[#3839af] hover:bg-slate-100"
                     }`
                   }
@@ -136,7 +134,7 @@ export default function Layout({
                 <button
                   className={`text-md font-semibold px-4 py-2 rounded-lg transition-colors ${
                     isDarkMode
-                      ? "text-slate-300 hover:text-white"
+                      ? "text-white hover:text-slate-200"
                       : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
@@ -174,13 +172,23 @@ export default function Layout({
                 key={l.to}
                 to={l.to}
                 onClick={() => setIsMenuOpen(false)}
-                className="block px-4 py-2.5 rounded-xl text-base font-medium text-slate-400 hover:bg-[#3839af]/10 hover:text-[#3839af] transition-colors"
+                className={`block px-4 py-2.5 rounded-xl text-base font-medium transition-colors ${
+                  isDarkMode
+                    ? "text-slate-300 hover:bg-[#3839af]/10 hover:text-[#3839af]"
+                    : "text-slate-700 hover:bg-[#3839af]/10 hover:text-[#3839af]"
+                }`}
               >
                 {l.label}
               </NavLink>
             ))}
             <div className="pt-4 border-t border-slate-800/30 flex gap-4 px-4">
-              <button className="flex-1 text-center py-2.5 rounded-xl text-md font-semibold border border-slate-700">
+              <button
+                className={`flex-1 text-center py-2.5 rounded-xl text-md font-semibold border ${
+                  isDarkMode
+                    ? "border-slate-700 text-white"
+                    : "border-slate-300 text-slate-800"
+                }`}
+              >
                 Login
               </button>
               <button className="flex-1 text-center py-2.5 rounded-xl text-md font-semibold bg-[#3839af] text-white">
@@ -192,13 +200,13 @@ export default function Layout({
       </header>
 
       {/* --- MAIN CONTENT --- */}
+      {/* The children inside here will now inherit the text-white or text-slate-800 naturally */}
       <main className={`flex-1 py-12 ${layoutWidth}`}>{children}</main>
 
       {/* --- MODERN ROYAL BLUE FOOTER --- */}
       <footer
         className={`${brandBg} border border-indigo-950/40 bg-gradient-to-b from-[#3839af] to-[#1e1f5e] pt-16 pb-8`}
       >
-        {/* Constraining footer elements to 80% and enforcing clean grid column parameters */}
         <div
           className={`${layoutWidth} grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10 mb-12 text-left`}
         >
