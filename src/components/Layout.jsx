@@ -1,33 +1,36 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-
-// 1. Import both logo versions here
-import LogoDark from "../assets/LightLogo.png"; // For dark mode
-import LogoLight from "../assets/logoLight.png"; // For light mode
-
 import {
-  ShoppingBag,
-  Menu,
-  X,
-  Sun,
-  Moon,
+  ArrowRight,
   Mail,
   MapPin,
-  ArrowRight,
+  Menu,
+  Moon,
+  ShoppingBag,
+  Sun,
+  X,
 } from "lucide-react";
+
+import LogoDark from "../assets/LightLogo.png";
+import LogoLight from "../assets/logoLight.png";
 
 export default function Layout({
   cartItems = [],
   children,
+  isDarkMode,
   onDecreaseQuantity,
   onIncreaseQuantity,
   onRemoveFromCart,
+  onToggleTheme,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const cartTotal = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
 
   const navLinks = [
     { label: "Home", to: "/" },
@@ -38,121 +41,95 @@ export default function Layout({
     { label: "Contact", to: "/contact" },
   ];
 
-  // Specific Deep Royal Blue Color and strict 80% Layout Constraints
-  const brandBg = "bg-[#3839af] text-slate-100";
-  const layoutWidth = "w-[80%] mx-auto px-4 sm:px-6 lg:px-8";
+  const socialLinks = [
+    { icon: "fa-brands fa-facebook-f", label: "Facebook" },
+    { icon: "fa-brands fa-telegram", label: "Telegram" },
+    { icon: "fa-brands fa-instagram", label: "Instagram" },
+    { icon: "fa-brands fa-x-twitter", label: "Twitter" },
+  ];
+
+  const layoutWidth = "mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8";
+  const pageWidth = "mx-auto w-[80%]";
+  const navLinkClass = ({ isActive }) =>
+    `block rounded-xl px-3.5 py-2 text-md font-bold transition duration-200 ${
+      isActive
+        ? "bg-[color:var(--shop-accent-soft)] text-[color:var(--shop-accent)]"
+        : "text-[color:var(--shop-ink-mid)] hover:bg-[color:var(--shop-surface)] hover:text-[color:var(--shop-ink)]"
+    }`;
 
   return (
-    <div
-      className={`min-h-screen flex flex-col transition-colors duration-300 ${
-        isDarkMode ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-800"
-      }`}
-    >
-      {/* --- PREMIUM NAVBAR --- */}
-      <header
-        className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-colors ${
-          isDarkMode
-            ? "bg-slate-900/80 border-slate-800"
-            : "bg-white/80 border-slate-200"
-        }`}
-      >
-        {/* Constraining header elements to 80% */}
+    <div className="min-h-screen bg-[color:var(--shop-bg)] text-[color:var(--shop-ink)] transition-colors duration-300">
+      <header className="sticky top-0 z-50 border-b border-[color:var(--shop-border)] bg-[color:var(--shop-nav)] shadow-sm backdrop-blur-xl transition-colors duration-300">
         <nav className={layoutWidth}>
-          <div className="flex h-20 items-center justify-between gap-4">
-            {/* Logo - Dynamically shifts image source based on theme */}
+          <div className="flex min-h-[4.5rem] items-center justify-between gap-4 py-3">
             <NavLink
+              className="flex shrink-0 items-center gap-3 rounded-2xl transition-transform active:scale-95"
               to="/"
-              className="flex flex-shrink-0 items-center gap-3 transition-transform active:scale-95"
             >
               <img
-                src={isDarkMode ? LogoDark : LogoLight}
                 alt="E4Shop logo"
-                className="h-12 w-12 object-contain"
+                className="h-11 w-11 object-contain"
+                src={isDarkMode ? LogoDark : LogoLight}
               />
-              <span
-                className={`text-xl font-extrabold tracking-wider ${isDarkMode ? "text-white" : "text-slate-900"}`}
-              >
-                E4<span className="text-[#3839af]">SHOP</span>
+              <span className="text-xl font-black tracking-normal text-[color:var(--shop-ink)]">
+                E4<span className="text-[color:var(--shop-accent)]">SHOP</span>
               </span>
             </NavLink>
 
-            {/* Desktop Center Navigation */}
-            <div className="hidden items-center gap-1 md:flex">
+            <div className="hidden items-center gap-1 rounded-2xl border border-[color:var(--shop-border)] bg-[color:var(--shop-card)] p-1 md:flex">
               {navLinks.map((link) => (
-                <NavLink
-                  key={link.to}
-                  to={link.to}
-                  className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg text-md font-semibold tracking-wide transition-all duration-200 ${
-                      isActive
-                        ? "bg-[#3839af]/10 text-[#3839af] font-bold"
-                        : isDarkMode
-                          ? "text-white hover:bg-slate-800/50"
-                          : "text-slate-600 hover:text-[#3839af] hover:bg-slate-100"
-                    }`
-                  }
-                >
+                <NavLink className={navLinkClass} key={link.to} to={link.to}>
                   {link.label}
                 </NavLink>
               ))}
             </div>
 
-            {/* Desktop Right Actions */}
             <div className="flex items-center justify-end gap-3">
-              {/* Theme Toggle */}
               <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className={`p-2.5 rounded-xl transition-all border ${
-                  isDarkMode
-                    ? "bg-slate-800 border-slate-700 hover:bg-slate-700 text-amber-400"
-                    : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-600"
-                }`}
-                aria-label="Toggle theme"
+                aria-label={
+                  isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+                }
+                className="theme-toggle"
+                onClick={onToggleTheme}
+                type="button"
               >
-                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                <span className="theme-toggle-thumb">
+                  {isDarkMode ? <Moon size={15} /> : <Sun size={15} />}
+                </span>
               </button>
 
-              {/* Cart Button */}
               <button
+                className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--shop-border)] bg-[color:var(--shop-card)] text-[color:var(--shop-ink)] transition hover:-translate-y-0.5 hover:border-[color:var(--shop-border-mid)] active:scale-95"
                 onClick={() => setIsCartOpen(true)}
-                className={`relative p-2.5 rounded-xl transition-all border ${
-                  isDarkMode
-                    ? "bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200"
-                    : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
-                } active:scale-95`}
+                type="button"
               >
                 <ShoppingBag size={18} />
                 {cartCount > 0 && (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#3839af] text-white text-[10px] font-bold shadow-md">
+                  <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--shop-accent)] text-[10px] font-bold text-white shadow-md">
                     {cartCount}
                   </span>
                 )}
               </button>
 
-              {/* Authentication Buttons */}
-              <div className="hidden lg:flex items-center gap-2 ml-2 border-l pl-4 border-slate-700/30">
+              <div className="hidden items-center gap-2 border-l border-[color:var(--shop-border)] pl-3 lg:flex">
                 <button
-                  className={`text-md font-semibold px-4 py-2 rounded-lg transition-colors ${
-                    isDarkMode
-                      ? "text-white hover:text-slate-200"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
+                  className="rounded-xl px-4 py-2 text-sm font-bold text-[color:var(--shop-ink-mid)] transition hover:bg-[color:var(--shop-surface)] hover:text-[color:var(--shop-ink)]"
+                  type="button"
                 >
                   Login
                 </button>
-                <button className="bg-[#3839af] text-white px-5 py-2 rounded-lg text-md font-semibold hover:bg-[#4648cc] active:scale-95 transition-all shadow-md shadow-indigo-950/20">
+                <button
+                  className="rounded-xl bg-[color:var(--shop-accent)] px-5 py-2 text-sm font-bold text-white shadow-lg shadow-indigo-950/20 transition hover:-translate-y-0.5 hover:bg-[color:var(--shop-accent-hover)] active:scale-95"
+                  type="button"
+                >
                   Sign Up
                 </button>
               </div>
 
-              {/* Mobile Menu Toggle */}
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`md:hidden p-2.5 rounded-xl border ${
-                  isDarkMode
-                    ? "bg-slate-800 border-slate-700 text-white"
-                    : "bg-slate-100 border-slate-200 text-slate-800"
-                }`}
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--shop-border)] bg-[color:var(--shop-card)] text-[color:var(--shop-ink)] md:hidden"
+                onClick={() => setIsMenuOpen((current) => !current)}
+                type="button"
               >
                 {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
               </button>
@@ -160,38 +137,35 @@ export default function Layout({
           </div>
         </nav>
 
-        {/* Mobile Menu Dropdown */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isMenuOpen ? "max-h-96 border-t border-slate-800" : "max-h-0"
-          } ${isDarkMode ? "bg-slate-900" : "bg-white"}`}
+          className={`overflow-hidden bg-[color:var(--shop-nav)] transition-all duration-300 md:hidden ${
+            isMenuOpen
+              ? "max-h-96 border-t border-[color:var(--shop-border)]"
+              : "max-h-0"
+          }`}
         >
-          <div className="px-4 py-4 space-y-2 w-[80%] mx-auto">
-            {navLinks.map((l) => (
+          <div className={`${layoutWidth} space-y-2 py-4`}>
+            {navLinks.map((link) => (
               <NavLink
-                key={l.to}
-                to={l.to}
+                className={navLinkClass}
+                key={link.to}
                 onClick={() => setIsMenuOpen(false)}
-                className={`block px-4 py-2.5 rounded-xl text-base font-medium transition-colors ${
-                  isDarkMode
-                    ? "text-slate-300 hover:bg-[#3839af]/10 hover:text-[#3839af]"
-                    : "text-slate-700 hover:bg-[#3839af]/10 hover:text-[#3839af]"
-                }`}
+                to={link.to}
               >
-                {l.label}
+                {link.label}
               </NavLink>
             ))}
-            <div className="pt-4 border-t border-slate-800/30 flex gap-4 px-4">
+            <div className="flex gap-3 border-t border-[color:var(--shop-border)] pt-4">
               <button
-                className={`flex-1 text-center py-2.5 rounded-xl text-md font-semibold border ${
-                  isDarkMode
-                    ? "border-slate-700 text-white"
-                    : "border-slate-300 text-slate-800"
-                }`}
+                className="flex-1 rounded-xl border border-[color:var(--shop-border)] py-2.5 text-sm font-bold"
+                type="button"
               >
                 Login
               </button>
-              <button className="flex-1 text-center py-2.5 rounded-xl text-md font-semibold bg-[#3839af] text-white">
+              <button
+                className="flex-1 rounded-xl bg-[color:var(--shop-accent)] py-2.5 text-sm font-bold text-white"
+                type="button"
+              >
                 Sign Up
               </button>
             </div>
@@ -199,62 +173,162 @@ export default function Layout({
         </div>
       </header>
 
-      {/* --- MAIN CONTENT --- */}
-      {/* The children inside here will now inherit the text-white or text-slate-800 naturally */}
-      <main className={`flex-1 py-12 ${layoutWidth}`}>{children}</main>
+      <main className={`flex-1 py-8 sm:py-10 ${pageWidth}`}>{children}</main>
 
-      {/* --- MODERN ROYAL BLUE FOOTER --- */}
-      <footer
-        className={`${brandBg} border border-indigo-950/40 bg-gradient-to-b from-[#3839af] to-[#1e1f5e] pt-16 pb-8`}
-      >
+      {isCartOpen && (
+        <div className="fixed inset-0 z-[80]" role="presentation">
+          <button
+            aria-label="Close cart"
+            className="absolute inset-0 h-full w-full bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsCartOpen(false)}
+            type="button"
+          />
+          <aside
+            aria-label="Shopping cart"
+            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-[color:var(--shop-border)] bg-[color:var(--shop-card)] p-5 text-[color:var(--shop-ink)] shadow-2xl transition-colors"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-[color:var(--shop-accent)]">
+                  Cart
+                </p>
+                <h2 className="text-xl font-extrabold">Shopping Bag</h2>
+              </div>
+              <button
+                aria-label="Close cart"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--shop-border)] bg-[color:var(--shop-surface)] text-[color:var(--shop-ink)]"
+                onClick={() => setIsCartOpen(false)}
+                type="button"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {cartItems.length === 0 ? (
+              <div className="flex flex-1 items-center justify-center rounded-2xl border border-dashed border-[color:var(--shop-border-mid)] text-sm text-[color:var(--shop-ink-mid)]">
+                Your cart is empty.
+              </div>
+            ) : (
+              <div className="flex-1 space-y-3 overflow-y-auto pr-1">
+                {cartItems.map((item) => (
+                  <article
+                    className="grid grid-cols-[72px_1fr] gap-3 rounded-2xl border border-[color:var(--shop-border)] bg-[color:var(--shop-surface)] p-3"
+                    key={item.id}
+                  >
+                    <img
+                      alt={item.name}
+                      className="h-16 w-16 rounded-xl object-cover"
+                      src={item.image}
+                    />
+                    <div className="min-w-0">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <h3 className="truncate text-sm font-bold">
+                            {item.name}
+                          </h3>
+                          <p className="text-xs text-[color:var(--shop-ink-light)]">
+                            ${item.price} each
+                          </p>
+                        </div>
+                        <button
+                          aria-label={`Remove ${item.name}`}
+                          className="text-[color:var(--shop-ink-light)] transition hover:text-red-500"
+                          onClick={() => onRemoveFromCart(item.id)}
+                          type="button"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="flex items-center rounded-xl border border-[color:var(--shop-border)]">
+                          <button
+                            className="px-3 py-1.5 text-sm font-bold"
+                            onClick={() => onDecreaseQuantity(item.id)}
+                            type="button"
+                          >
+                            -
+                          </button>
+                          <span className="min-w-8 text-center text-sm font-bold">
+                            {item.quantity}
+                          </span>
+                          <button
+                            className="px-3 py-1.5 text-sm font-bold"
+                            onClick={() => onIncreaseQuantity(item.id)}
+                            type="button"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <p className="text-sm font-extrabold">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-5 border-t border-[color:var(--shop-border)] pt-4">
+              <div className="mb-4 flex items-center justify-between text-base font-extrabold">
+                <span>Total</span>
+                <span>${cartTotal.toFixed(2)}</span>
+              </div>
+              <button
+                className="w-full rounded-xl bg-[color:var(--shop-accent)] px-5 py-3 text-sm font-bold text-white transition hover:bg-[color:var(--shop-accent-hover)] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={cartItems.length === 0}
+                type="button"
+              >
+                Checkout
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      <footer className="border-t border-[color:var(--shop-border)] bg-[color:var(--shop-footer)] py-12 text-white">
         <div
-          className={`${layoutWidth} grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10 mb-12 text-left`}
+          className={`${layoutWidth} grid grid-cols-1 gap-x-12 gap-y-10 text-left sm:grid-cols-2 lg:grid-cols-4`}
         >
-          {/* Brand Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <img
-                src={LogoDark}
                 alt="E4Shop logo"
                 className="h-10 w-10 object-contain"
+                src={LogoDark}
               />
-              <span className="font-extrabold tracking-wider text-xl text-white">
+              <span className="text-xl font-extrabold tracking-normal text-white">
                 E4<span className="text-indigo-100">SHOP</span>
               </span>
             </div>
-            <p className="text-md leading-relaxed text-indigo-100/80 max-w-xs">
-              The world's most vibrant tech destination. We deliver performance,
-              power, and unmatched style directly to your doorstep.
+            <p className="max-w-xs text-sm leading-7 text-indigo-100/80">
+              A focused tech shop for phones, computers, watches, and everyday
+              accessories.
             </p>
-
-            {/* Social Icons */}
             <div className="flex gap-3 pt-2">
-              {["facebook-f", "telegram", "instagram", "twitter"].map(
-                (platform) => (
-                  <a
-                    key={platform}
-                    href="/#"
-                    aria-label={platform}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white transition-all hover:bg-white hover:text-[#3839af]"
-                  >
-                    <i className={`fa-brands fa-${platform} text-md`}></i>
-                  </a>
-                ),
-              )}
+              {socialLinks.map(({ icon, label }) => (
+                <a
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white hover:text-[color:var(--shop-accent)]"
+                  href="/#"
+                  key={label}
+                >
+                  <i aria-hidden="true" className={`${icon} text-base`} />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Quick Links / Categories */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200 h-6 flex items-center">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200">
               Categories
             </h4>
-            <ul className="space-y-2.5 text-md text-white/80">
+            <ul className="space-y-2.5 text-sm text-white/80">
               {navLinks.slice(0, 4).map((link) => (
                 <li key={link.to}>
                   <NavLink
+                    className="block transition hover:text-white"
                     to={link.to}
-                    className="hover:text-white transition-colors duration-200 block"
                   >
                     {link.label}
                   </NavLink>
@@ -263,66 +337,59 @@ export default function Layout({
             </ul>
           </div>
 
-          {/* Contact Details */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200 h-6 flex items-center">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200">
               Contact Us
             </h4>
-            <div className="space-y-3 text-md text-white/80 w-full flex flex-col">
+            <div className="space-y-3 text-sm text-white/80">
               <a
+                className="flex items-center gap-3 transition hover:text-white"
                 href="mailto:sales@e4shop.com"
-                className="flex items-center gap-3 hover:text-white transition-colors group"
               >
-                <Mail
-                  size={16}
-                  className="text-indigo-200 group-hover:scale-110 transition-transform flex-shrink-0"
-                />
+                <Mail className="shrink-0 text-indigo-200" size={16} />
                 <span className="truncate">sales@e4shop.com</span>
               </a>
               <div className="flex items-start gap-3">
-                <MapPin
-                  size={16}
-                  className="text-indigo-200 mt-0.5 flex-shrink-0"
-                />
-                <span className="leading-tight">
-                  659 Kampuchea Krom Blvd (128)
-                </span>
+                <MapPin className="mt-0.5 shrink-0 text-indigo-200" size={16} />
+                <span>659 Kampuchea Krom Blvd (128)</span>
               </div>
             </div>
           </div>
 
-          {/* Elegant Newsletter */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200 h-6 flex items-center">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-200">
               Newsletter
             </h4>
-            <p className="text-xs text-indigo-100/70">
-              Get 10% off your first order and stay updated.
+            <p className="text-sm text-indigo-100/70">
+              Get product drops and simple discount updates.
             </p>
-            <div className="flex bg-black/20 border border-white/10 rounded-xl p-1 focus-within:border-white transition-all max-w-xs">
+            <div className="flex max-w-xs rounded-xl border border-white/10 bg-black/20 p-1 transition focus-within:border-white">
               <input
-                type="email"
+                className="w-full bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-indigo-200/50"
                 placeholder="Your email address"
-                className="bg-transparent w-full px-3 py-2 text-md text-white placeholder:text-indigo-200/50 outline-none"
+                type="email"
               />
-              <button className="bg-white text-[#3839af] p-2 rounded-lg hover:bg-indigo-50 transition-all active:scale-95 flex-shrink-0">
+              <button
+                aria-label="Subscribe"
+                className="shrink-0 rounded-lg bg-white p-2 text-[color:var(--shop-accent)] transition hover:bg-indigo-50 active:scale-95"
+                type="button"
+              >
                 <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Bottom Banner */}
-        <div className="pt-8 border-t border-white/10">
+        <div className="mt-10 border-t border-white/10 pt-8">
           <div
-            className={`${layoutWidth} flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-indigo-200/50`}
+            className={`${layoutWidth} flex flex-col items-center justify-between gap-4 text-xs text-indigo-200/60 sm:flex-row`}
           >
-            <p>© 2026 E4SHOP. All rights reserved.</p>
+            <p>Copyright 2026 E4SHOP. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-white transition-colors">
+              <a className="transition hover:text-white" href="/#">
                 Privacy Policy
               </a>
-              <a href="#" className="hover:text-white transition-colors">
+              <a className="transition hover:text-white" href="/#">
                 Terms of Service
               </a>
             </div>

@@ -67,7 +67,7 @@ export default function AboutUs({ isDarkMode = true }) {
 
   return (
     <div
-      className={`transition-colors duration-300 ${isDarkMode ? "bg-slate-800" : "bg-slate-50"}`}
+      className={`transition-colors duration-300 ${isDarkMode ? "" : "bg-slate-50"}`}
     >
       {/* Hero */}
       <section className="relative overflow-hidden bg-[#3839af] px-4 py-24 text-white">
@@ -137,7 +137,7 @@ export default function AboutUs({ isDarkMode = true }) {
           ].map((card) => (
             <div
               key={card.title}
-              className={`rounded-2xl border p-8 transition hover:-translate-y-1 hover:shadow-lg ${cardBg} ${cardBdr}`}
+              className={`rounded-2xl border p-8 transition hover:-translate-y-1 ${cardBg} ${cardBdr}`}
             >
               <div
                 className={`mb-6 flex h-12 w-12 items-center justify-center rounded-xl ${
@@ -220,7 +220,7 @@ export default function AboutUs({ isDarkMode = true }) {
             return (
               <div
                 key={value.title}
-                className={`rounded-2xl border p-7 transition hover:-translate-y-1 hover:shadow-lg ${cardBg} ${cardBdr}`}
+                className={`rounded-2xl border p-7 transition hover:-translate-y-1 ${cardBg} ${cardBdr}`}
               >
                 <div
                   className={`mb-5 flex h-11 w-11 items-center justify-center rounded-xl ${iconBg} ${iconClr}`}
@@ -263,40 +263,42 @@ export default function AboutUs({ isDarkMode = true }) {
             {teamMembers.map((member) => (
               <div
                 key={member.name}
-                className={`group overflow-hidden rounded-2xl border transition duration-300 hover:-translate-y-1 hover:shadow-lg ${cardBg} ${cardBdr}`}
+                className={`group overflow-hidden rounded-2xl border p-4 transition duration-300 hover:-translate-y-1 ${cardBg} ${cardBdr}`}
               >
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-100">
                   <img
                     src={member.image}
                     alt={member.name}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-base font-extrabold text-white">
-                      {member.name}
-                    </h3>
-                    <p className="mt-0.5 text-xs font-semibold text-white/70">
-                      {member.role}
-                    </p>
+                  <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-extrabold text-[#3839af] backdrop-blur-sm">
+                    E4Shop
                   </div>
                 </div>
-                <div className="flex items-center justify-between px-4 py-3">
-                  <span className={`text-xs font-semibold ${textMuted}`}>
-                    E4Shop Team
-                  </span>
-                  <div className="flex gap-2">
-                    {["fa-facebook-f", "fa-instagram", "fa-telegram"].map(
-                      (icon) => (
-                        <a
-                          key={icon}
-                          href="/#"
-                          className={`flex h-7 w-7 items-center justify-center rounded-lg transition hover:bg-[#3839af] hover:text-white ${iconBg} ${iconClr}`}
-                        >
-                          <i className={`fa-brands ${icon} text-[10px]`}></i>
-                        </a>
-                      ),
-                    )}
+                <div className="pt-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className={`text-lg font-extrabold ${text}`}>
+                        {member.name}
+                      </h3>
+                      <p className={`mt-1 text-sm font-semibold ${iconClr}`}>
+                        {member.role}
+                      </p>
+                    </div>
+                    <span
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-black ${iconBg} ${iconClr}`}
+                    >
+                      {member.name
+                        .split(" ")
+                        .map((part) => part[0])
+                        .join("")
+                        .slice(0, 2)}
+                    </span>
+                  </div>
+                  <div className={`mt-5 border-t pt-4 ${cardBdr}`}>
+                    <p className={`text-xs font-semibold uppercase tracking-widest ${textMuted}`}>
+                      Team Member
+                    </p>
                   </div>
                 </div>
               </div>

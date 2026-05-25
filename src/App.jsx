@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import Layout from "./components/Layout.jsx";
@@ -17,7 +17,24 @@ export default function App() {
   const { loading, products } = useProduct();
 
   const [cartItems, setCartItems] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("e4shop-theme");
+
+    if (savedTheme) {
+      return savedTheme === "dark";
+    }
+
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+  });
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+  useEffect(() => {
+    const theme = isDarkMode ? "dark" : "light";
+
+    localStorage.setItem("e4shop-theme", theme);
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  }, [isDarkMode]);
 
   function handleAddToCart(product) {
     setCartItems((currentItems) => {
@@ -64,6 +81,7 @@ export default function App() {
   }
 
   const pageProps = {
+    isDarkMode,
     loading,
     products,
     onAddToCart: handleAddToCart,
@@ -72,39 +90,43 @@ export default function App() {
 
   return (
     <HashRouter>
-      <Layout
-        cartItems={cartItems}
-        onDecreaseQuantity={handleDecreaseQuantity}
-        onIncreaseQuantity={handleIncreaseQuantity}
-        onRemoveFromCart={handleRemoveFromCart}
-      >
-        <Routes>
-          <Route path="/" element={<HomePage {...pageProps} />} />
-          <Route path="/phone" element={<PhoneProducts {...pageProps} />} />
-          <Route
-            path="/computer"
-            element={<ComputerProducts {...pageProps} />}
+      <div className={`theme-root ${isDarkMode ? "theme-dark" : "theme-light"}`}>
+        <Layout
+          cartItems={cartItems}
+          isDarkMode={isDarkMode}
+          onDecreaseQuantity={handleDecreaseQuantity}
+          onIncreaseQuantity={handleIncreaseQuantity}
+          onRemoveFromCart={handleRemoveFromCart}
+          onToggleTheme={() => setIsDarkMode((current) => !current)}
+        >
+          <Routes>
+            <Route path="/" element={<HomePage {...pageProps} />} />
+            <Route path="/phone" element={<PhoneProducts {...pageProps} />} />
+            <Route
+              path="/computer"
+              element={<ComputerProducts {...pageProps} />}
+            />
+            <Route path="/watch" element={<WatchProducts {...pageProps} />} />
+            <Route path="/about" element={<AboutUs {...pageProps} />} />
+            <Route path="/contact" element={<Contact {...pageProps} />} />
+
+            <Route
+              path="/product/:productId"
+              element={<SingleProduct {...pageProps} />}
+            />
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+
+        {quickViewProduct && (
+          <ProductModal
+            product={quickViewProduct}
+            onAddToCart={handleAddToCart}
+            onClose={() => setQuickViewProduct(null)}
           />
-          <Route path="/watch" element={<WatchProducts {...pageProps} />} />
-          <Route path="/about" element={<AboutUs {...pageProps} />} />
-          <Route path="/contact" element={<Contact {...pageProps} />} />
-
-          <Route
-            path="/product/:productId"
-            element={<SingleProduct {...pageProps} />}
-          />
-
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
-
-      {quickViewProduct && (
-        <ProductModal
-          product={quickViewProduct}
-          onAddToCart={handleAddToCart}
-          onClose={() => setQuickViewProduct(null)}
-        />
-      )}
+        )}
+      </div>
     </HashRouter>
   );
 }

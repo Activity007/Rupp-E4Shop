@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { categories } from "../data/product.js";
-import { ArrowUpRight, ShoppingCart, Eye } from "lucide-react";
+import { ArrowUpRight, ShoppingCart, Eye, Heart } from "lucide-react"; // Added Heart icon
 
 /* ─── Breakpoint hook ───────────────────────────────────────────────────── */
 // sm < 640  |  md 640–1023  |  lg 1024+
@@ -32,6 +32,7 @@ const SLIDES = [
     subtitle: "Raw power. Refined design. Yours.",
     cta: "Shop Phones",
     accent: "#3B5BDB",
+    to: "/phone",
   },
   {
     src: "https://rotarywatches.com/cdn/shop/files/Rotary_seamatic_yellow_dial_desktop_banner.png?v=1729177044&width=3200",
@@ -42,6 +43,7 @@ const SLIDES = [
     subtitle: "Precision crafted for every moment.",
     cta: "Shop Watches",
     accent: "#C84B2F",
+    to: "/watch",
   },
   {
     src: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1200&q=80",
@@ -52,19 +54,20 @@ const SLIDES = [
     subtitle: "Built for creators, coders & beyond.",
     cta: "Shop Laptops",
     accent: "#2B9348",
+    to: "/computer",
   },
 ];
 
 /* ─── Design tokens ─────────────────────────────────────────────────────── */
 const T = {
-  ink: "#1A1713",
-  inkMid: "#4A4540",
-  inkLight: "#9A948D",
+  ink: "var(--shop-ink, #1F2937)",
+  inkMid: "var(--shop-ink-mid, #4B5563)",
+  inkLight: "var(--shop-ink-light, #9CA3AF)",
   accent: "#C84B2F",
-  border: "rgba(26,23,19,0.10)",
-  borderMid: "rgba(26,23,19,0.22)",
-  card: "#FFFFFF",
-  surface: "#F0EDE8",
+  border: "var(--shop-border, #E5E7EB)",
+  borderMid: "var(--shop-border-mid, #D1D5DB)",
+  card: "var(--shop-card, #FFFFFF)",
+  surface: "var(--shop-surface, #F9FAFB)",
 };
 
 /* ─── Helpers ───────────────────────────────────────────────────────────── */
@@ -101,11 +104,10 @@ function Divider({ label }) {
 function Hero({ activeSlide, setActiveSlide, bp }) {
   const sm = bp === "sm";
   const md = bp === "md";
-  const stacked = sm || md; // mobile + tablet: image fills full, text overlaid
+  const stacked = sm || md;
 
   return (
     <div style={{ marginBottom: sm ? 44 : 68 }}>
-      {/* ── Main panel ── */}
       <div
         style={{
           position: "relative",
@@ -115,7 +117,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
           border: `1px solid ${T.border}`,
         }}
       >
-        {/* Image layers */}
         {SLIDES.map((s, i) => (
           <div
             key={`img${i}`}
@@ -136,7 +137,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
               alt={s.alt}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-            {/* Stacked mode: dark gradient so text is readable */}
             {stacked && (
               <div
                 style={{
@@ -147,7 +147,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
                 }}
               />
             )}
-            {/* Desktop: fade left edge to blend with text panel */}
             {!stacked && (
               <div
                 style={{
@@ -160,7 +159,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
           </div>
         ))}
 
-        {/* Text layers */}
         {SLIDES.map((s, i) => (
           <div
             key={`txt${i}`}
@@ -190,7 +188,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
                 gap: sm ? 10 : 16,
               }}
             >
-              {/* Tag row */}
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span
                   style={{
@@ -219,7 +216,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
                 </span>
               </div>
 
-              {/* Title */}
               <h1
                 style={{
                   fontFamily: "'Playfair Display', Georgia, serif",
@@ -239,7 +235,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
                 {s.title}
               </h1>
 
-              {/* Subtitle — hide on sm to keep it clean */}
               {!sm && (
                 <p
                   style={{
@@ -255,7 +250,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
               )}
             </div>
 
-            {/* CTA */}
             <div
               style={{
                 display: "flex",
@@ -266,7 +260,7 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
               }}
             >
               <Link
-                to="/shop"
+                to={s.to}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -297,7 +291,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
           </div>
         ))}
 
-        {/* Dots */}
         <div
           style={{
             position: "absolute",
@@ -330,7 +323,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
           ))}
         </div>
 
-        {/* Counter — md + lg only */}
         {!sm && (
           <div
             style={{
@@ -354,7 +346,6 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
         )}
       </div>
 
-      {/* Thumbnail strip — md + lg */}
       {!sm && (
         <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
           {SLIDES.map((s, idx) => (
@@ -421,254 +412,300 @@ function Hero({ activeSlide, setActiveSlide, bp }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CATEGORIES
-═══════════════════════════════════════════════════════════════════════════ */
-function Categories({ bp }) {
-  const sm = bp === "sm";
-  const md = bp === "md";
-
-  return (
-    <section style={{ marginBottom: sm ? 48 : 72 }}>
-      <Divider label="Browse by category" />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: sm
-            ? "1fr"
-            : md
-              ? "repeat(2, 1fr)"
-              : "repeat(4, 1fr)",
-          gap: sm ? 10 : 14,
-        }}
-      >
-        {categories.map((cat) => (
-          <Link
-            key={cat.id}
-            to={`/${cat.id}`}
-            style={{
-              textDecoration: "none",
-              color: T.ink,
-              background: T.card,
-              border: `1px solid ${T.border}`,
-              borderRadius: sm ? 13 : 16,
-              padding: sm ? 12 : 18,
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
-              transition: "border-color 0.2s, transform 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = T.borderMid;
-              e.currentTarget.style.transform = "translateY(-3px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = T.border;
-              e.currentTarget.style.transform = "none";
-            }}
-          >
-            <div
-              style={{
-                aspectRatio: "4/3",
-                borderRadius: 9,
-                overflow: "hidden",
-                background: T.surface,
-              }}
-            >
-              <img
-                src={cat.image}
-                alt={cat.name}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  filter: "saturate(0.75)",
-                  transition: "transform 0.4s, filter 0.4s",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = "scale(1.06)";
-                  e.target.style.filter = "saturate(1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = "scale(1)";
-                  e.target.style.filter = "saturate(0.75)";
-                }}
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <p
-                  style={{
-                    fontSize: sm ? 13 : 15,
-                    fontWeight: 700,
-                    margin: "0 0 1px",
-                  }}
-                >
-                  {cat.name}
-                </p>
-                {!sm && (
-                  <p style={{ fontSize: 12, color: T.inkLight, margin: 0 }}>
-                    {cat.description}
-                  </p>
-                )}
-              </div>
-              <ArrowUpRight size={14} color={T.inkLight} />
-            </div>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
+/* ─── CUSTOM MARGIN TO INTEGRATE GOOGLE-LIKE STYLE ──────────────────────── */
+const cardStyle = {
+  background: "#FFFFFF",
+  border: "1px solid #EDEDED",
+  borderRadius: "24px",
+  padding: "14px",
+  position: "relative",
+  display: "flex",
+  flexDirection: "column",
+  fontFamily: "'DM Sans', sans-serif",
+  boxShadow: "0px 1px 3px rgba(0,0,0,0.02)",
+};
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PRODUCT CARD
+   PRODUCT CARD (UPDATED TO MATCH IMAGE DESIGN)
 ═══════════════════════════════════════════════════════════════════════════ */
-function ProductCard({ product, onAddToCart, onQuickView, compact }) {
+function ProductCard({ product, onAddToCart, onQuickView }) {
   const [hov, setHov] = useState(false);
-  const disc = product.oldPrice
-    ? Math.round((1 - product.price / product.oldPrice) * 100)
-    : null;
+  const [fav, setFav] = useState(false);
+
+  // Fallbacks to secure visual fields from your data mockup or your screenshot
+  const brand = product.brand || "Google";
+  const categoryLabel = product.category || "PHONE";
+  const currentPrice = product.price || 540;
+  const originalPrice = product.oldPrice || 700;
+  const ratingValue = product.rating || 4.8;
+  const colorOptions = product.colors || ["#0F172A", "#FED7AA", "#F472B6"];
 
   return (
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
-      style={{
-        background: T.card,
-        border: `1px solid ${hov ? T.borderMid : T.border}`,
-        borderRadius: 14,
-        overflow: "hidden",
-        transition: "border-color 0.2s, transform 0.2s",
-        transform: hov ? "translateY(-4px)" : "translateY(0)",
-        display: "flex",
-        flexDirection: "column",
-      }}
+      style={cardStyle}
     >
+      {/* ── Image Container Area ── */}
       <div
         style={{
           position: "relative",
-          aspectRatio: "1/1",
+          width: "100%",
+          aspectRatio: "1.05/1",
+          borderRadius: "18px",
           overflow: "hidden",
-          background: T.surface,
+          background: "#F8F9FA",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <img
-          src={product.image}
+          src={
+            product.image ||
+            "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
+          }
           alt={product.name}
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transform: hov ? "scale(1.06)" : "scale(1)",
-            transition: "transform 0.5s",
+            maxWidth: "92%",
+            maxHeight: "92%",
+            objectFit: "contain",
+            transform: hov ? "scale(1.03)" : "scale(1)",
+            transition: "transform 0.4s ease",
           }}
         />
-        {disc && (
-          <span
-            style={{
-              position: "absolute",
-              top: 9,
-              left: 9,
-              background: T.accent,
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              padding: "3px 7px",
-              borderRadius: 4,
-            }}
-          >
-            −{disc}%
-          </span>
-        )}
+
+        {/* Brand pill (Top-Left) */}
+        <span
+          style={{
+            position: "absolute",
+            top: "12px",
+            left: "12px",
+            background: "rgba(255, 255, 255, 0.85)",
+            backdropFilter: "blur(8px)",
+            color: "#374151",
+            fontSize: "11px",
+            fontWeight: "600",
+            padding: "5px 12px",
+            borderRadius: "100px",
+          }}
+        >
+          {brand}
+        </span>
+
+        {/* Favorite Heart Button (Top-Right) */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setFav(!fav);
+          }}
+          style={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+            width: "34px",
+            height: "34px",
+            borderRadius: "50%",
+            background: "rgba(255, 255, 255, 0.85)",
+            backdropFilter: "blur(8px)",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
+            transition: "transform 0.2s",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.transform = "scale(1.08)")
+          }
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        >
+          <Heart
+            size={16}
+            fill={fav ? "#EF4444" : "transparent"}
+            color={fav ? "#EF4444" : "#6B7280"}
+          />
+        </button>
+
+        {/* Quick View trigger layer */}
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "rgba(26,23,19,0.34)",
+            background: "rgba(255,255,255,0.15)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: 8,
             opacity: hov ? 1 : 0,
             transition: "opacity 0.25s",
+            pointerEvents: hov ? "auto" : "none",
           }}
         >
           <button
             onClick={() => onQuickView?.(product)}
             style={{
-              width: compact ? 36 : 42,
-              height: compact ? 36 : 42,
-              borderRadius: 10,
-              background: "#fff",
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
-              justifyContent: "center",
+              gap: "6px",
+              background: "#FFFFFF",
+              color: "#1F2937",
+              fontSize: "13px",
+              fontWeight: "600",
+              padding: "8px 16px",
+              borderRadius: "100px",
+              border: "1px solid #E5E7EB",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              cursor: "pointer",
             }}
           >
-            <Eye size={compact ? 15 : 17} color={T.ink} />
-          </button>
-          <button
-            onClick={() => onAddToCart(product)}
-            style={{
-              width: compact ? 36 : 42,
-              height: compact ? 36 : 42,
-              borderRadius: 10,
-              background: T.accent,
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ShoppingCart size={compact ? 15 : 17} color="#fff" />
+            <Eye size={14} /> Quick view
           </button>
         </div>
-      </div>
-      <div style={{ padding: compact ? "11px 13px 14px" : "14px 16px 18px" }}>
-        <p
-          style={{
-            fontSize: compact ? 12 : 14,
-            fontWeight: 600,
-            margin: "0 0 4px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {product.name}
-        </p>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 7 }}>
-          <span
+
+        {/* Save Badge Label (Bottom Right Overlay) */}
+        {originalPrice && currentPrice && (
+          <div
             style={{
-              fontSize: compact ? 14 : 16,
-              fontWeight: 700,
-              color: T.accent,
+              position: "absolute",
+              bottom: "12px",
+              right: "12px",
+              background: "#EEF2FF",
+              color: "#4338CA",
+              fontSize: "11px",
+              fontWeight: "700",
+              padding: "4px 10px",
+              borderRadius: "100px",
             }}
           >
-            ${product.price}
+            Save ${originalPrice - currentPrice}
+          </div>
+        )}
+      </div>
+
+      {/* ── Details Panel ── */}
+      <div style={{ padding: "14px 4px 4px" }}>
+        {/* Category & Rating Row */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "6px",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "#9CA3AF",
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+            }}
+          >
+            {categoryLabel}
           </span>
-          {product.oldPrice && (
+          <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+            <span style={{ color: "#FBBF24", fontSize: "14px" }}>★</span>
             <span
-              style={{
-                fontSize: 11,
-                color: T.inkLight,
-                textDecoration: "line-through",
-              }}
+              style={{ fontSize: "12px", fontWeight: "700", color: "#F97316" }}
             >
-              ${product.oldPrice}
+              {ratingValue}
             </span>
-          )}
+          </div>
+        </div>
+
+        {/* Title / Name */}
+        <h3
+          style={{
+            fontSize: "18px",
+            fontWeight: "700",
+            color: "#111827",
+            margin: "0 0 4px 0",
+            lineHeight: "1.3",
+          }}
+        >
+          {product.name || "Pixel 9"}
+        </h3>
+
+        {/* Author / Creator text structure */}
+        <p style={{ fontSize: "13px", color: "#6B7280", margin: "0 0 12px 0" }}>
+          By <span style={{ color: "#4B5563" }}>{brand}</span>
+        </p>
+
+        {/* Color Switchers Swatch Mock */}
+        <div style={{ display: "flex", gap: "6px", marginBottom: "16px" }}>
+          {colorOptions.map((color, cIdx) => (
+            <span
+              key={cIdx}
+              style={{
+                width: "14px",
+                height: "14px",
+                borderRadius: "50%",
+                backgroundColor: color,
+                display: "inline-block",
+                border: cIdx === 2 ? "1px solid #E5E7EB" : "none",
+                boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Divider line style */}
+        <div
+          style={{ height: "1px", background: "#F3F4F6", marginBottom: "14px" }}
+        />
+
+        {/* Price Tag Row + Add to Cart Button */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span
+              style={{ fontSize: "20px", fontWeight: "700", color: "#0F172A" }}
+            >
+              ${currentPrice}
+            </span>
+            {originalPrice && (
+              <span
+                style={{
+                  fontSize: "13px",
+                  color: "#9CA3AF",
+                  textDecoration: "line-through",
+                  marginTop: "1px",
+                }}
+              >
+                ${originalPrice}
+              </span>
+            )}
+          </div>
+
+          <button
+            onClick={() => onAddToCart?.(product)}
+            style={{
+              background: "#4F46E5", // Beautiful Deep Indigo Blue button
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: "100px",
+              padding: "10px 22px",
+              fontSize: "13px",
+              fontWeight: "700",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#4338CA")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#4F46E5")}
+          >
+            <ShoppingCart size={14} />
+            Add
+          </button>
         </div>
       </div>
     </div>
@@ -678,6 +715,124 @@ function ProductCard({ product, onAddToCart, onQuickView, compact }) {
 /* ═══════════════════════════════════════════════════════════════════════════
    CATEGORY SECTION
 ═══════════════════════════════════════════════════════════════════════════ */
+function Spinner() {
+  return (
+    <div
+      style={{ display: "flex", justifyContent: "center", padding: "40px 0" }}
+    >
+      <div
+        style={{
+          width: 26,
+          height: 26,
+          borderRadius: "50%",
+          border: `2px solid ${T.surface}`,
+          borderTop: `2px solid ${T.accent}`,
+          animation: "spin 0.8s linear infinite",
+        }}
+      />
+    </div>
+  );
+}
+
+function Categories({ bp }) {
+  const sm = bp === "sm";
+  const md = bp === "md";
+
+  return (
+    <section style={{ marginBottom: sm ? 48 : 68 }}>
+      <Divider label="Shop by category" />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: sm
+            ? "1fr"
+            : md
+              ? "repeat(3, 1fr)"
+              : "repeat(3, minmax(0, 1fr))",
+          gap: sm ? 16 : 20,
+        }}
+      >
+        {categories.map((cat) => (
+          <Link
+            key={cat.id}
+            to={`/${cat.id}`}
+            style={{
+              minHeight: sm ? 220 : 260,
+              borderRadius: sm ? 16 : 20,
+              overflow: "hidden",
+              position: "relative",
+              display: "flex",
+              alignItems: "flex-end",
+              padding: sm ? 18 : 24,
+              textDecoration: "none",
+              color: "#fff",
+              border: `1px solid ${T.border}`,
+              background: T.ink,
+            }}
+          >
+            <img
+              src={cat.image}
+              alt={cat.name}
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transition: "transform 0.35s ease",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.12) 58%, transparent 100%)",
+              }}
+            />
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <h2
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: sm ? 24 : 30,
+                  lineHeight: 1,
+                  margin: "0 0 8px",
+                }}
+              >
+                {cat.name}
+              </h2>
+              <p
+                style={{
+                  fontSize: 13,
+                  lineHeight: 1.5,
+                  margin: "0 0 14px",
+                  maxWidth: 260,
+                  color: "rgba(255,255,255,0.75)",
+                }}
+              >
+                {cat.description}
+              </p>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Browse <ArrowUpRight size={13} />
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function CategorySection({
   cat,
   idx,
@@ -694,23 +849,6 @@ function CategorySection({
     .filter((p) => p.category?.toLowerCase() === cat.id.toLowerCase())
     .slice(0, 4);
   if (catProducts.length === 0) return null;
-
-  const Spinner = () => (
-    <div
-      style={{ display: "flex", justifyContent: "center", padding: "40px 0" }}
-    >
-      <div
-        style={{
-          width: 26,
-          height: 26,
-          borderRadius: "50%",
-          border: `2px solid ${T.surface}`,
-          borderTop: `2px solid ${T.accent}`,
-          animation: "spin 0.8s linear infinite",
-        }}
-      />
-    </div>
-  );
 
   return (
     <div style={{ marginBottom: sm ? 48 : 60 }}>
@@ -778,72 +916,33 @@ function CategorySection({
         </Link>
       </div>
 
-      {/* sm: 1-col */}
-      {sm && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-          {loading ? (
+      {/* Grid wrapper dynamic configs */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: sm
+            ? "1fr"
+            : md
+              ? "repeat(2, 1fr)"
+              : "repeat(4, 1fr)",
+          gap: sm ? "16px" : "20px", // cleaner spacing for modern cards
+        }}
+      >
+        {loading ? (
+          <div style={{ gridColumn: "1 / -1" }}>
             <Spinner />
-          ) : (
-            catProducts.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                onAddToCart={onAddToCart}
-                onQuickView={onQuickView}
-                compact
-              />
-            ))
-          )}
-        </div>
-      )}
-
-      {/* md: 2-col */}
-      {md && (
-        <div
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}
-        >
-          {loading ? (
-            <div style={{ gridColumn: "span 2" }}>
-              <Spinner />
-            </div>
-          ) : (
-            catProducts.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                onAddToCart={onAddToCart}
-                onQuickView={onQuickView}
-              />
-            ))
-          )}
-        </div>
-      )}
-
-      {/* lg: 4-col */}
-      {!sm && !md && (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 16,
-          }}
-        >
-          {loading ? (
-            <div style={{ gridColumn: "span 4" }}>
-              <Spinner />
-            </div>
-          ) : (
-            catProducts.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                onAddToCart={onAddToCart}
-                onQuickView={onQuickView}
-              />
-            ))
-          )}
-        </div>
-      )}
+          </div>
+        ) : (
+          catProducts.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              onAddToCart={onAddToCart}
+              onQuickView={onQuickView}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 }

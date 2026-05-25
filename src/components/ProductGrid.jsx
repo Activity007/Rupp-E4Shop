@@ -6,17 +6,15 @@ export default function ProductGrid({ products, onAddToCart, onQuickView }) {
   }
 
   return (
-    <div className="all-product">
-      <div className="row p-0 m-0">
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            onAddToCart={onAddToCart}
-            onQuickView={onQuickView}
-            product={product}
-          />
-        ))}
-      </div>
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          onAddToCart={onAddToCart}
+          onQuickView={onQuickView}
+          product={product}
+        />
+      ))}
     </div>
   );
 }
